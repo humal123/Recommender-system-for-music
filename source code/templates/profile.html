@@ -1,0 +1,47 @@
+{% extends 'nav-base.html' %}
+{% block title %}MusicRS | {{username}}{% endblock %}
+{% block headicon %}person{% endblock %}
+{% block headname %}Profile{% endblock %}
+{% block content %}
+<div class="container-fluid" style="display: flex;max-width: 100%;flex-wrap: wrap;align-content: center;justify-content: flex-start;align-items: center;">
+    <div class="container m-auto">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-6 m-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="/profile" method="post">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Username" value="{{username}}" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Email" value="{{email}}" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="oldpassword">Old password</label>
+                                <input type="password" class="form-control" id="oldpassword" name="oldpassword"
+                                    placeholder="Enter Old Password" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="newpassword">New/Old password</label>
+                                <input type="password" class="form-control" id="newpassword" name="newpassword"
+                                    placeholder="Enter New/Old Password" required/>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                            <div class="card-footer text-left">
+                                <small>re-enter old password to save changes, entering new password will change the old password!</small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

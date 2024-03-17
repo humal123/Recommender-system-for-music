@@ -1,0 +1,28 @@
+{% extends 'nav-base.html' %}
+{% block title %}MusicRS | {{name}}{% endblock %}
+{% block headicon %}list{% endblock %}
+{% block headname %}{{name}}{% endblock %}
+{% block content %}
+<div class="container-fluid" style="display: flex;max-width: 100%;flex-wrap: wrap;align-content: center;justify-content: flex-start;align-items: center;">
+    {% if not playlist|length %}
+        <h3 class="text-white">No songs added yet!</h3>
+    {% else %}
+    {% for song in playlist %}
+    {% set rInt = range(1, 15) | random %}
+    <div class="card rounded border-0 m-1 mb-3 mr-3 song-card"
+        onclick="window.location = `/view-song?songid={{ song.songid }}&name={{ song.name }}&artist={{ song.artist }}&year={{ song.year }}&genre={{ song.genre }}&rint={{rInt}}`"
+        style="width: 250px !important;min-width: 250px; height:240px !important;min-height: 240px;background-color: rgba(255, 255, 255, 0.9);backdrop-filter: blur(10px);">
+        <div class="card-body p-0">
+            <img class="card-img rounded border-0" style="width: 250px; height: 150px;object-fit: cover;" src="/static/song{{rInt}}.jpg" alt="Song">
+            <h6 class="card-title ml-2 mt-2 mb-0"><ion-icon name="musical-note"></ion-icon> {{ song.name }} <i
+                    class="card-subtitle ml-2 mt-0 text-primary font-weight-normal" style="font-size:12px;">{{ song.genre }}</i></h6>
+            <p class="card-subtitle ml-2 mt-0" style="font-size: 12px !important;"><ion-icon name="person"></ion-icon> {{ song.artist }} <ion-icon
+                    name="remove-circle"
+                    style="float: right;font-size: 18px;margin-right: 15px; margin-top: 4px; color: red;"
+                    onclick="removeFromPlaylist(event,`{{ song.songid }} show {{name}}`);"></ion-icon></p>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

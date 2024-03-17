@@ -1,0 +1,73 @@
+{% extends 'nav-base.html' %}
+{% block title %}{{ song.name }} by {{ song.artist }}{% endblock %}
+{% block headicon %}musical-note{% endblock %}
+{% block headname %}Song{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="card rounded border-0 m-auto"
+        style="width: 300px !important;min-width: 300px; min-height: 330px;background-color: rgba(255, 255, 255, 0.9);backdrop-filter: blur(10px);">
+        <div class="card-body p-0">
+            <img class="card-img rounded border-0" style="width: 300px; height: 200px;object-fit: cover;"
+                src="/static/song{{rInt}}.jpg" alt="Song">
+            <h6 class="card-title ml-2 mt-2 mb-0"><ion-icon name="musical-note"></ion-icon> {{ song.name }}</h6>
+            <p class="card-subtitle ml-2 mt-0"><ion-icon name="person"></ion-icon> {{ song.artist }}</p>
+            <i class="card-subtitle ml-2 mt-0"><ion-icon name="calendar"></ion-icon> {{ song.year }}</i>
+            <i class="card-subtitle ml-2 mt-0 text-primary">{{ song.genre }} <ion-icon name="add-circle"
+                    style="float: right;font-size: 26px;margin-right: 15px; color: orange;"
+                    onclick="addToPlaylist(event,`{{ song.songid }} show`);"></ion-icon></i><br>
+            <div class="container-fluid text-center mt-2" style="font-size: 1.5em;">
+                <ion-icon {% if song.rating> 0 %}name="star"{% else %}name="star-outline"{% endif %} class="rating-star"
+                    onclick="window.location = `/view-song?songid={{ song.songid }}&name={{ song.name }}&artist={{
+                    song.artist }}&year={{ song.year }}&genre={{ song.genre }}&rate=1&rint={{rInt}}`"></ion-icon>
+                <ion-icon {% if song.rating> 1 %}name="star"{% else %}name="star-outline"{% endif %} class="rating-star"
+                    onclick="window.location = `/view-song?songid={{ song.songid }}&name={{ song.name }}&artist={{
+                    song.artist }}&year={{ song.year }}&genre={{ song.genre }}&rate=2&rint={{rInt}}`"></ion-icon>
+                <ion-icon {% if song.rating> 2 %}name="star"{% else %}name="star-outline"{% endif %} class="rating-star"
+                    onclick="window.location = `/view-song?songid={{ song.songid }}&name={{ song.name }}&artist={{
+                    song.artist }}&year={{ song.year }}&genre={{ song.genre }}&rate=3&rint={{rInt}}`"></ion-icon>
+                <ion-icon {% if song.rating> 3 %}name="star"{% else %}name="star-outline"{% endif %} class="rating-star"
+                    onclick="window.location = `/view-song?songid={{ song.songid }}&name={{ song.name }}&artist={{
+                    song.artist }}&year={{ song.year }}&genre={{ song.genre }}&rate=4&rint={{rInt}}`"></ion-icon>
+                <ion-icon {% if song.rating> 4 %}name="star"{% else %}name="star-outline"{% endif %} class="rating-star"
+                    onclick="window.location = `/view-song?songid={{ song.songid }}&name={{ song.name }}&artist={{
+                    song.artist }}&year={{ song.year }}&genre={{ song.genre }}&rate=5&rint={{rInt}}`"></ion-icon>
+            </div>
+            <audio controls="controls" autoplay loop>
+                <source src="/static/songs/{{song.name}}.mp3" type="audio/mpeg" />
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+</div>
+<br>
+<hr>
+{% if recommended %}
+<div class="flex-column w-100 rounded container-fluid p-0 m-0"
+    style="height: 323px;background-color: rgba(0, 0, 0, 0.3); backdrop-filter: blur(5px);">
+    <div class="row rounded-top container-fluid m-0"
+        style="background: none;padding: 0px 10px;">
+        <h4 class="col m-1 dancing-script-bold" style="color: white; top: 10px;">Similar songs</h4>
+    </div>
+    <div class="row p-4 m-auto container-fluid"
+        style="overflow-x: scroll;flex-wrap: nowrap;justify-content:flex-start;align-items: center;">
+        {% for rsong in recommended%}
+        {% set rIntv = range(1, 15) | random %}
+        <div class="card rounded border-0 m-1 mr-3 song-card"
+            onclick="window.location = `/view-song?songid={{ rsong.songid }}&name={{ rsong.name }}&artist={{ rsong.artist }}&year={{ rsong.year }}&genre={{ rsong.genre }}&rint={{rIntv}}`"
+            style="width: 250px !important;min-width: 250px; height:230px !important;min-height: 230px;background-color: rgba(255, 255, 255, 0.9);backdrop-filter: blur(10px);">
+            <div class="card-body p-0">
+                <img class="card-img rounded border-0" style="width: 250px; height: 150px;object-fit: cover;"
+                    src="/static/song{{rIntv}}.jpg" alt="Song">
+                <h6 class="card-title ml-2 mt-2 mb-0"><ion-icon name="musical-note"></ion-icon> {{ rsong.name }} <i
+                        class="card-subtitle ml-2 mt-0 text-primary font-weight-normal">{{ rsong.genre }}</i></h6>
+                <p class="card-subtitle ml-2 mt-0" style="font-size: 12px !important;"><ion-icon
+                        name="person"></ion-icon> {{ rsong.artist }} <ion-icon name="add-circle"
+                        style="float: right;font-size: 18px;margin-right: 15px; margin-top: 4px; color: orange;"
+                        onclick="addToPlaylist(event,`{{ rsong.songid }} show`);"></ion-icon></p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div><br>
+{% endif %}
+{% endblock %}

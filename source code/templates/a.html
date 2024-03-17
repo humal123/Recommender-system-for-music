@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Visualizer</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="visualizer"></canvas>
+    <script>
+        // Set up the canvas
+        const canvas = document.getElementById('visualizer');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        const width = canvas.width = window.innerWidth;
+        const height = canvas.height = window.innerHeight;
+
+        // Create audio context
+
+        // Set up audio source
+        const audio = new Audio();
+        audio.crossOrigin = "anonymous";
+        audio.src = '/static/songs/Dance Monkey.mp3'; // Replace 'YOUR_AUDIO_FILE.mp3' with the path to your audio file
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+
+        // Analyser settings
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        
+        // Create circle points
+    const numPoints = 360;
+    const radius = Math.min(width, height) / 3;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const pointSpacing = (Math.PI * 2) / numPoints;
+
+    const points = [];
+    for (let i = 0; i < numPoints; i++) {
+        const angle = i * pointSpacing;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        points.push({ x, y, displacement: 0 });
+    }
+
+    // Damping factor
+    const damping = 0.001;
+    // Maximum displacement
+    const maxDisplacement = Math.min(width, height) / 100;
+
+    // Main render loop
+    function renderFrame() {
+        requestAnimationFrame(renderFrame);
+
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+
+        // Get data from analyser
+        analyser.getByteFrequencyData(dataArray);
+
+        // Calculate average amplitude
+        let amplitude = 0;
+        for (let i = 0; i < bufferLength; i++) {
+            amplitude += dataArray[i];
+        }
+        amplitude /= bufferLength;
+        amplitude *= damping;
+
+        // Update points
+        for (let i = 0; i < numPoints; i++) {
+            const angle = i * pointSpacing;
+            const displacement = amplitude * (Math.random() * 2 + 1); // Random displacement
+            points[i].displacement = points[i].displacement * damping + displacement * damping;
+            points[i].displacement = Math.min(points[i].displacement, maxDisplacement); // Limit displacement
+            const x = centerX + Math.cos(angle) * (radius + points[i].displacement);
+            const y = centerY + Math.sin(angle) * (radius + points[i].displacement);
+            points[i].x = x;
+            points[i].y = y;
+        }
+
+        // Draw smooth spikes
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 0; i < numPoints; i++) {
+            const nextIndex = (i + 1) % numPoints;
+            const controlX = (points[i].x + points[nextIndex].x) / 2;
+            const controlY = (points[i].y + points[nextIndex].y) / 2;
+            ctx.quadraticCurveTo(points[i].x, points[i].y, controlX, controlY);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.stroke();
+    }
+
+    // Start audio and render loop
+    audio.play();
+    renderFrame();
+    </script>
+</body>
+
+</html>

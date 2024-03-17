@@ -1,0 +1,345 @@
+{% extends 'lib-base.html' %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<style>
+    body {
+        /* background: linear-gradient(180deg, rgb(230, 230, 230), white);
+        background-size: cover;
+        background-position: center; */
+    }
+
+    img {
+        border-radius: 5px;
+    }
+
+    @-webkit-keyframes flip-left {
+        0% {
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        50% {
+            -webkit-transform: translateX(100%);
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        75% {
+            -webkit-transform: translateX(-100%);
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        100% {
+            -webkit-transform: translateX(0%);
+            transform: translateX(0%);
+            opacity: 1;
+        }
+    }
+
+    @keyframes flip-left {
+        0% {
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        50% {
+            -webkit-transform: translateX(100%);
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        75% {
+            -webkit-transform: translateX(-100%);
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        100% {
+            -webkit-transform: translateX(0%);
+            transform: translateX(0%);
+            opacity: 1;
+        }
+    }
+
+
+    .flip-left {
+        -webkit-animation: flip-left 0.25s ease;
+        animation: flip-left 0.25s ease;
+    }
+
+    @-webkit-keyframes flip-right {
+        0% {
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        50% {
+            -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        75% {
+            -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        100% {
+            -webkit-transform: translateX(0%);
+            transform: translateX(0%);
+            opacity: 1;
+        }
+    }
+
+    @keyframes flip-right {
+        0% {
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        50% {
+            -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        75% {
+            -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        100% {
+            -webkit-transform: translateX(0%);
+            transform: translateX(0%);
+            opacity: 1;
+        }
+    }
+
+
+    .flip-right {
+        -webkit-animation: flip-right 0.25s ease;
+        animation: flip-right 0.25s ease;
+    }
+
+    .navbar-collapse {
+        justify-content: flex-end;
+    }
+
+    .card {
+        transition: all 0.5s ease;
+    }
+
+    .card:hover {
+        transform: translate(0px, -10px);
+    }
+</style>
+<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-primary">
+    <a class="navbar-brand text-white" href="#">Admin Panel</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler02"
+        aria-controls="navbarToggler02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarToggler02">
+        <ul class="navbar-nav mr-0 mt-2 mt-lg-0">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{{url_for('logout')}}">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav><br>
+<div class="container-fluid text-center">
+    <br><br>
+    <h2>Users</h2><br>
+    <div class="d-flex flex-nowrap justify-content-center align-items-center align-content-center">
+        <ion-icon name="chevron-back" onclick="prev();" class="text-black mr-2" style="font-size: 48px;"></ion-icon>
+        <div class="card rounded" id="userCard"
+            style="min-width: 15rem; min-height: 15rem;box-shadow:rgba(0,0,0,0.3) 0px 0px 15px 0px; border: 0px;">
+            <div class="card-body text-left text-white rounded"
+                style="background: linear-gradient(0deg, rgb(41, 18, 58), rgb(136, 0, 255));">
+                <h5 class="card-title" id="userID">User#</h5><br>
+                <p class="card-text" id="userName">Username:</p>
+                <p class="card-text" id="userEmail">Email:</p><br>
+                <button class="btn btn-success" id="userEditBtn" style="float: left;" onclick=""><ion-icon
+                        name="pencil"></ion-icon></button>
+                <button class="btn btn-danger" id="userDeleteBtn" style="float: right;" onclick=""><ion-icon
+                        name="trash-bin"></ion-icon></button>
+            </div>
+        </div>
+        <ion-icon name="chevron-forward" onclick="next();" class="text-black ml-2" style="font-size: 48px;"></ion-icon>
+    </div>
+</div>
+<div class="table-responsive p-5">
+    <h2 class="text-light">Plots</h2>
+    <div class="col text-center align-items-center">
+        <img src="" id="plot1" alt="Plot 1" style="width: 690px;transform: scale(1);"><br><br><br>
+        <img src="" id="plot2" alt="Plot 2" style="width: 690px;transform: scale(1);"><br><br><br>
+        <img src="" id="plot3" alt="Plot 3" style="width: 690px;transform: scale(1);"><br><br><br>
+        <img src="" id="plot4" alt="Plot 4" style="width: 690px;transform: scale(1);"><br><br><br>
+    </div>
+</div>
+<div id="overlay-shadow"
+    style="display: none;position: fixed;backdrop-filter: blur(7px);left:0;top:0;z-index:1;width: 100vw;height: 100vh; background-color: rgba(75, 75, 75, 0.568);">
+</div>
+<div id="user-edit-box" class="container-fluid rounded text-left"
+    style="background-color: rgba(255, 255, 255, 0.74); width: 400px;min-height: 180px;padding-top: 10px;padding-bottom: 20px;position: fixed;left:calc(50% - 150px);top:calc(50% - 200px);z-index: 2;text-align: center;">
+    <br>
+    <label for="username" class="text-left">Username</label>
+    <input type="text" id="userid" hidden>
+    <input type="text" id="username" placeholder="Enter Username" class="m-auto p-1 w-100 rounded"
+        style="z-index: 3;outline: none;border: 1px solid white;"><br><br>
+    <label for="email" class="text-left">Email</label>
+    <input type="email" id="email" placeholder="Enter Email" class="m-auto p-1 w-100 rounded"
+        style="z-index: 3;outline: none;border: 1px solid white;"><br><br>
+    <label for="password" class="text-left">Password</label>
+    <input type="password" id="password" placeholder="Enter Password" class="m-auto p-1 w-100 rounded"
+        style="z-index: 3;outline: none;border: 1px solid white;"><br><br>
+    <p style="font-size: 12px; color: gray;">Leave field empty when update not required</p>
+    <div style="display: flex;">
+        <button onclick="editUser('save')" style="z-index: 3;"
+            class="w-50 m-auto border-0 p-1 bg-primary text-white rounded">Save</button>&nbsp;&nbsp;
+        <button onclick="editUser(`hide`)" style="z-index: 3;"
+            class="w-50 m-auto border-0 p-1 bg-danger text-white rounded">Cancel</button>
+    </div>
+</div>
+<script>
+    document.getElementById("user-edit-box").style.display = "none";
+    let userID = document.getElementById("userID");
+    let userName = document.getElementById("userName");
+    let userEmail = document.getElementById("userEmail");
+    let userEditBtn = document.getElementById("userEditBtn");
+    let userDeleteBtn = document.getElementById("userDeleteBtn");
+    let userCard = document.getElementById("userCard");
+    document.getElementById("plot1").src = `{{url_for('totalsongsgenrewise')}}`;
+    setTimeout(() => { document.getElementById("plot2").src = `{{url_for('topsongs')}}`; }, 3000);
+    setTimeout(() => { document.getElementById("plot3").src = `{{url_for('topartists')}}`; }, 5000);
+    setTimeout(() => { document.getElementById("plot4").src = `{{url_for('ratingsdistribution')}}`; document.getElementById("overlay-shadow").style.display = "none"; }, 7000);
+    let users = [];
+    let cuser = 0;
+    {% for user in users %}
+    users.push(['{{user[0]}}', '{{user[1]}}', '{{user[2]}}'])
+    {% endfor %}
+    if (users.length > 0) {
+        userID.innerHTML = `User-ID: ${users[cuser][0]}`;
+        userName.innerHTML = `Username: ${users[cuser][1]}`;
+        userEmail.innerHTML = `Email: ${users[cuser][2]}`;
+        userEditBtn.onclick = () => {
+            editUser(users[cuser][0], users[cuser][1], users[cuser][2]);
+        };
+        userDeleteBtn.onclick = () => {
+            deleteUser(users[cuser][0]);
+        };
+    }
+    else{
+        userID.innerHTML = `User-ID: No user(s) found`;
+        userName.innerHTML = `Username: N/A`;
+        userEmail.innerHTML = `Email: N/A`;
+        userEditBtn.onclick = () => {};
+        userDeleteBtn.onclick = () => {};
+    }
+    function next() {
+        cuser = (cuser + 1) % users.length;
+        userCard.classList.toggle('flip-right');
+        userID.innerHTML = `User-ID: ${users[cuser][0]}`;
+        userName.innerHTML = `Username: ${users[cuser][1]}`;
+        userEmail.innerHTML = `Email: ${users[cuser][2]}`;
+        userEditBtn.onclick = () => {
+            editUser(users[cuser][0], users[cuser][1], users[cuser][2]);
+        };
+        userDeleteBtn.onclick = () => {
+            deleteUser(users[cuser][0]);
+        };
+        setTimeout(() => { userCard.classList.toggle('flip-right'); }, 250);
+    }
+    function prev() {
+        cuser = Math.abs((cuser - 1) % users.length);
+        userCard.classList.toggle('flip-left');
+        userID.innerHTML = `User# ${users[cuser][0]}`;
+        userName.innerHTML = `Username: ${users[cuser][1]}`;
+        userEmail.innerHTML = `Email: ${users[cuser][2]}`;
+        userEditBtn.onclick = () => {
+            editUser(users[cuser][0], users[cuser][1], users[cuser][2]);
+        };
+        userDeleteBtn.onclick = () => {
+            deleteUser(users[cuser][0]);
+        };
+        setTimeout(() => { userCard.classList.toggle('flip-left'); }, 250);
+    }
+    function editUser(str) {
+        if (str == 'hide') {
+            document.getElementById("overlay-shadow").style.display = "none";
+            document.getElementById("user-edit-box").style.display = "none";
+        }
+        else if (str == 'save') {
+            fetch("./admin", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "id": document.getElementById("userid").value, "username": document.getElementById("username").value, "email": document.getElementById("email").value, "password": document.getElementById("password").value, "action": "edit" })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response:', data);
+                    if (data['message'] == 'ok') {
+                        window.location.reload();
+                    }
+                    else {
+                        alert(data['message']);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            document.getElementById("overlay-shadow").style.display = "none";
+            document.getElementById("user-edit-box").style.display = "none";
+        }
+        else {
+            document.getElementById("overlay-shadow").style.display = "block";
+            document.getElementById("user-edit-box").style.display = "block";
+            document.getElementById("userid").value = str.split(' ')[0]
+            document.getElementById("username").value = str.split(' ')[1]
+            document.getElementById("email").value = str.split(' ')[2]
+        }
+    }
+    function deleteUser(id) {
+        let c = confirm("Are you sure, you want to delete account?");
+        if (c == true) {
+            fetch("./admin", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "id": id, "action": "delete" })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response:', data);
+                    if (data['message'] == 'ok') {
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+</script>
+{% endblock %}
